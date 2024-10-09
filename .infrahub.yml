@@ -1,0 +1,9 @@
+---
+python_transforms:
+  - name: devices_transform
+    class_name: DevicesTransform
+    file_path: "devices_transform.py"
+
+queries:
+  - name: devices_query
+    file_path: "devices_query.gql"
