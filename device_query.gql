@@ -1,5 +1,5 @@
-query DeviceQuery($device_name: String!) {
-  InfraDevice(name__value: $device_name) {
+query DeviceQuery($device: String!) {
+  InfraDevice(name__value: $device) {
     edges {
       node {
         name {
