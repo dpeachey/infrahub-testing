@@ -16,6 +16,15 @@ query DeviceQuery($device: String!) {
             name {
               value
             }
+            vlans {
+              edges {
+                node {
+                  vlan_id {
+                    value
+                  }
+                }
+              }
+            }
           }
         }
       }

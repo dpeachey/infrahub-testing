@@ -11,11 +11,14 @@ class DeviceTransform(InfrahubTransform):
         device_name = device["name"]["value"]
         device_description = device["description"]["value"]
         device_type = device["type"]["value"]
-        site_name = device["site"]["node"]["name"]["value"]
+        site = device["site"]["node"]
+        site_name = site["name"]["value"]
+        site_vlan_ids = [vlan["node"]["vlan_id"]["value"] for vlan in site["vlans"]["edges"]]
 
         return {
             "device_name": device_name,
             "device_description": device_description,
             "device_type": device_type,
-            "site_name": site_name
+            "site_name": site_name,
+            "site_vlan_ids": site_vlan_ids
         }
