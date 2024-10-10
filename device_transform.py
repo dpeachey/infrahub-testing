@@ -1,10 +1,10 @@
 from infrahub_sdk.transforms import InfrahubTransform
 
 
-class DevicesTransform(InfrahubTransform):
+class DeviceTransform(InfrahubTransform):
 
-    query = "devices_query"
-    url = "devices"
+    query = "device_query"
+    url = "device"
 
     async def transform(self, data):
         device = data["InfraDevice"]["edges"][0]["node"]

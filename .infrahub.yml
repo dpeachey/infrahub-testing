@@ -1,11 +1,11 @@
 ---
 python_transforms:
-  - name: devices_transform
-    class_name: DevicesTransform
-    file_path: "devices_transform.py"
+  - name: device_transform
+    class_name: DeviceTransform
+    file_path: "device_transform.py"
 
 queries:
-  - name: devices_query
-    file_path: "devices_query.gql"
+  - name: device_query
+    file_path: "device_query.gql"
   - name: all_devices_query
     file_path: "all_devices_query.gql"
