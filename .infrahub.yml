@@ -7,3 +7,5 @@ python_transforms:
 queries:
   - name: devices_query
     file_path: "devices_query.gql"
+  - name: all_devices_query
+    file_path: "all_devices_query.gql"
