@@ -1,0 +1,9 @@
+query AllDevicesQuery {
+  InfraDevice {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}
