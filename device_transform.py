@@ -22,11 +22,3 @@ class DeviceTransform(InfrahubTransform):
             "site_name": site_name,
             "site_vlan_ids": site_vlan_ids
         }
-
-        # return (
-        #     f"Device: {device_name}\n"
-        #     f"Description: {device_description}\n"
-        #     f"Type: {device_type}\n"
-        #     f"Site: {site_name}\n"
-        #     f"VLAN IDs: {','.join(str(vlan_id) for vlan_id in site_vlan_ids)}"
-        # )
