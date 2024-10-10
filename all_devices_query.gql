@@ -3,6 +3,9 @@ query AllDevicesQuery {
     edges {
       node {
         id
+        name {
+          value
+        }
       }
     }
   }
