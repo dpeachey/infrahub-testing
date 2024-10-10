@@ -11,10 +11,10 @@ queries:
     file_path: "all_devices_query.gql"
 
 artifact_definitions:
-  - name: "device_full_config"
-    artifact_name: "Device full config"
+  - name: "device_config"
+    artifact_name: "Device config"
     parameters:
       device_name: "name__value"
     content_type: "application/json"
     targets: "all_devices"
-    transformation: "device-transform"
+    transformation: "device_transform"
