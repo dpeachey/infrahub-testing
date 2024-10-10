@@ -14,7 +14,7 @@ artifact_definitions:
   - name: "device_config"
     artifact_name: "Device config"
     parameters:
-      device_name: "name__value"
+      device: "name__value"
     content_type: "application/json"
     targets: "all_devices"
     transformation: "device_transform"
