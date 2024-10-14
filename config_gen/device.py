@@ -94,7 +94,7 @@ class Device:
     def get_arista_device_config(self) -> AristaDeviceConfig:
         interfaces: InterfacesConfig = InterfacesConfig(
             interface=[
-                f"interface {interface.name}\n  blah"
+                f"interface {interface.name}\n  blah\n"
                 for interface in self._device.interfaces
             ]
         )

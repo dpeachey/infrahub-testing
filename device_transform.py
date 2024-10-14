@@ -3,13 +3,9 @@ import sys
 sys.path.append(".")
 from typing import Any
 
+from config_gen.device import Device
 from infrahub_sdk.transforms import InfrahubTransform
-from infrahub_testing.config_gen.device import Device
-from infrahub_testing.models.abstract import (
-    AbstractDevice,
-    AbstractInterface,
-    AbstractIpAddress,
-)
+from models.abstract import AbstractDevice, AbstractInterface, AbstractIpAddress
 
 
 class DeviceTransformJson(InfrahubTransform):
