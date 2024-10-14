@@ -1,20 +1,30 @@
 ---
 python_transforms:
-  - name: device_transform
-    class_name: DeviceTransform
-    file_path: "device_transform.py"
+  - name: device_transform_json
+    class_name: DeviceTransformJson
+    file_path: "transforms/device_transform.py"
+  - name: device_transform_cli
+    class_name: DeviceTransformCli
+    file_path: "transforms/device_transform.py"
 
 queries:
   - name: device_query
-    file_path: "device_query.gql"
+    file_path: "queries/device_query.gql"
   - name: all_devices_query
-    file_path: "all_devices_query.gql"
+    file_path: "queries/all_devices_query.gql"
 
 artifact_definitions:
-  - name: "device_config"
-    artifact_name: "Device config"
+  - name: "device_config_json"
+    artifact_name: "Device config JSON"
     parameters:
       device: "name__value"
     content_type: "application/json"
     targets: "all_devices"
-    transformation: "device_transform"
+    transformation: "device_transform_json"
+  - name: "device_config_cli"
+    artifact_name: "Device config CLI"
+    parameters:
+      device: "name__value"
+    content_type: "text/plain"
+    targets: "all_devices"
+    transformation: "device_transform_cli"

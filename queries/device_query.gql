@@ -1,0 +1,66 @@
+query DeviceQuery($device: String!) {
+  InfraDevice(name__value: $device) {
+    edges {
+      node {
+        name {
+          value
+        }
+        description {
+          value
+        }
+        platform {
+          node {
+            name {
+              value
+            }
+          }
+        }
+        type {
+          value
+        }
+        site {
+          node {
+            name {
+              value
+            }
+            vlans {
+              edges {
+                node {
+                  vlan_id {
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
+        interfaces {
+          edges {
+            node {
+              name {
+                value
+              }
+              description {
+                value
+              }
+              enabled {
+                value
+              }
+              ... on InfraInterfaceL3 {
+                ip_addresses {
+                  edges {
+                    node {
+                      address {
+                        value
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
