@@ -1,13 +1,9 @@
 from typing import Any
 
-from models.abstract import AbstractDevice
-from models.device_config import (
-    AristaDeviceConfig,
-    BaseDeviceConfig,
-    DefaultDeviceConfig,
-    get_arista_device_config,
-    get_default_device_config,
-)
+from models.abstract import AbstractDevice, get_abstract_device
+from models.config_arista import AristaDeviceConfig, get_arista_device_config
+from models.config_base import BaseDeviceConfig
+from models.config_default import DefaultDeviceConfig, get_default_device_config
 
 
 class Device:
@@ -35,3 +31,9 @@ class Device:
                     self._device
                 )
                 return device_config
+
+
+def get_device(data: dict[str, Any]) -> Device:
+    infra_device: dict[str, Any] = data["InfraDevice"]["edges"][0]["node"]
+    abstract_device: AbstractDevice = get_abstract_device(infra_device=infra_device)
+    return Device(device=abstract_device)
