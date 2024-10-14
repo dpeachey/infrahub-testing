@@ -14,7 +14,7 @@ class DeviceTransformJson(InfrahubTransform):
 
     async def transform(self, data: dict[str, Any]) -> dict[str, Any]:
         device: Device = get_device(data)
-        return device.json_config
+        return device.json_config()
 
 
 class DeviceTransformCli(InfrahubTransform):
@@ -23,7 +23,7 @@ class DeviceTransformCli(InfrahubTransform):
 
     async def transform(self, data: dict[str, Any]) -> str:
         device: Device = get_device(data)
-        return device.cli_config
+        return device.cli_config()
 
 
 def get_abstract_device(infra_device: dict[str, Any]) -> AbstractDevice:
@@ -54,4 +54,4 @@ def get_abstract_device(infra_device: dict[str, Any]) -> AbstractDevice:
 def get_device(data: dict[str, Any]) -> Device:
     infra_device: dict[str, Any] = data["InfraDevice"]["edges"][0]["node"]
     abstract_device: AbstractDevice = get_abstract_device(infra_device=infra_device)
-    return Device(abstract_device=abstract_device)
+    return Device(device=abstract_device)
