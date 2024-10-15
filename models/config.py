@@ -1,6 +1,6 @@
 from typing import Self
 
-from models.base import BaseConfigModel
+from models.base import BaseDeviceConfigModel
 from models.data import DeviceData
 from models.interfaces_arista import AristaInterfacesConfig
 from models.interfaces_oc import OpenconfigInterfacesConfig
@@ -8,7 +8,7 @@ from pydantic import Field
 from typing_extensions import Annotated
 
 
-class DefaultDeviceConfig(BaseConfigModel):
+class DefaultDeviceConfig(BaseDeviceConfigModel):
     interfaces: Annotated[
         OpenconfigInterfacesConfig,
         Field(None, alias="openconfig-interfaces:interfaces"),
@@ -22,7 +22,7 @@ class DefaultDeviceConfig(BaseConfigModel):
         return cls(interfaces=interfaces)
 
 
-class AristaDeviceConfig(BaseConfigModel):
+class AristaDeviceConfig(BaseDeviceConfigModel):
     interfaces: AristaInterfacesConfig
 
     @classmethod
@@ -34,3 +34,13 @@ class AristaDeviceConfig(BaseConfigModel):
 
     def cli_config(self) -> str:
         return self.interfaces.cli_config()
+
+
+class DeviceConfig(BaseDeviceConfigModel):
+    @staticmethod
+    def create(device_data: DeviceData) -> BaseDeviceConfigModel:
+        match device_data.platform:
+            case "Arista EOS":
+                return AristaDeviceConfig.create(device_data)
+            case _:
+                return DefaultDeviceConfig.create(device_data)

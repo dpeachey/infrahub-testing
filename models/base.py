@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 
 
-class BaseConfigModel(BaseModel):
+class BaseDeviceConfigModel(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
         populate_by_name=True,
@@ -9,7 +9,14 @@ class BaseConfigModel(BaseModel):
 
     @staticmethod
     def cli_config() -> str:
-        return "Not implemented"
+        return "CLI config is not supported for this device"
+
+
+class BaseConfigModel(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+        populate_by_name=True,
+    )
 
 
 class BaseDataModel(BaseModel):
