@@ -1,6 +1,6 @@
 from typing import Self
 
-from models.abstract import AbstractDevice
+from models.data import DeviceData
 from models.interfaces_arista import AristaInterfacesConfig
 from models.interfaces_oc import OpenconfigInterfacesConfig
 from pydantic import BaseModel, ConfigDict, Field
@@ -15,7 +15,7 @@ class BaseDeviceConfig(BaseModel):
 
     @staticmethod
     def cli_config() -> str:
-        return "Not implemented for this device"
+        return "Not implemented"
 
 
 class DefaultDeviceConfig(BaseDeviceConfig):
@@ -25,9 +25,9 @@ class DefaultDeviceConfig(BaseDeviceConfig):
     ]
 
     @classmethod
-    def create(cls, device: AbstractDevice) -> Self:
+    def create(cls, device_data: DeviceData) -> Self:
         interfaces: OpenconfigInterfacesConfig = OpenconfigInterfacesConfig.create(
-            device=device
+            device_data=device_data
         )
         return cls(interfaces=interfaces)
 
@@ -36,9 +36,9 @@ class AristaDeviceConfig(BaseDeviceConfig):
     interfaces: AristaInterfacesConfig
 
     @classmethod
-    def create(cls, device: AbstractDevice) -> Self:
+    def create(cls, device_data: DeviceData) -> Self:
         interfaces: AristaInterfacesConfig = AristaInterfacesConfig.create(
-            device=device
+            device_data=device_data
         )
         return cls(interfaces=interfaces)
 

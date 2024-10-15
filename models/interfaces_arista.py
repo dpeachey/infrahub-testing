@@ -1,6 +1,6 @@
 from typing import Self
 
-from models.abstract import AbstractDevice
+from models.data import DeviceData
 from pydantic import BaseModel, ConfigDict
 
 
@@ -12,11 +12,11 @@ class AristaInterfacesConfig(BaseModel):
     interface: list[str]
 
     @classmethod
-    def create(cls, device: AbstractDevice) -> Self:
+    def create(cls, device_data: DeviceData) -> Self:
         return cls(
             interface=[
                 f"interface {interface.name}\n  blah\n"
-                for interface in device.interfaces
+                for interface in device_data.interfaces
             ]
         )
 

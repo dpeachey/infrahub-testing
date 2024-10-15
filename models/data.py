@@ -3,29 +3,29 @@ from typing import Any, Self
 from pydantic import BaseModel, ConfigDict
 
 
-class AbstractBaseModel(BaseModel):
+class BaseDataModel(BaseModel):
     model_config = ConfigDict(
         extra_fields=False,
     )
 
 
-class AbstractIpAddress(AbstractBaseModel):
+class IpAddressData(BaseDataModel):
     address: str
 
 
-class AbstractInterface(AbstractBaseModel):
+class InterfaceData(BaseDataModel):
     name: str
     description: str | None
     enabled: bool
-    ip_addresses: list[AbstractIpAddress]
+    ip_addresses: list[IpAddressData]
 
 
-class AbstractDevice(AbstractBaseModel):
+class DeviceData(BaseDataModel):
     name: str
     description: str | None
     platform: str
     type: str
-    interfaces: list[AbstractInterface]
+    interfaces: list[InterfaceData]
 
     @classmethod
     def create(cls, infra_device: dict[str, Any]) -> Self:
@@ -35,12 +35,12 @@ class AbstractDevice(AbstractBaseModel):
             platform=infra_device["platform"]["node"]["name"]["value"],
             type=infra_device["type"]["value"],
             interfaces=[
-                AbstractInterface(
+                InterfaceData(
                     name=interface["node"]["name"]["value"],
                     description=interface["node"]["description"]["value"],
                     enabled=interface["node"]["enabled"]["value"],
                     ip_addresses=[
-                        AbstractIpAddress(address=ip["node"]["address"]["value"])
+                        IpAddressData(address=ip["node"]["address"]["value"])
                         for ip in interface["node"]["ip_addresses"]["edges"]
                     ]
                     if interface["node"].get("ip_addresses")

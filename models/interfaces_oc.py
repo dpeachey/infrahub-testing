@@ -1,6 +1,6 @@
 from typing import List, Self
 
-from models.abstract import AbstractDevice
+from models.data import DeviceData
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
 
@@ -301,7 +301,7 @@ class OpenconfigInterfacesConfig(BaseModel):
     ]
 
     @classmethod
-    def create(cls, device: AbstractDevice) -> Self:
+    def create(cls, device_data: DeviceData) -> Self:
         return cls(
             interface=[
                 InterfaceListEntry(
@@ -345,6 +345,6 @@ class OpenconfigInterfacesConfig(BaseModel):
                         ]
                     ),
                 )
-                for interface in device.interfaces
+                for interface in device_data.interfaces
             ]
         )
