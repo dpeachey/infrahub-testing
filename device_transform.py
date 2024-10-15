@@ -3,8 +3,8 @@ import sys
 sys.path.append(".")
 from typing import Any
 
-from device import Device, get_device
 from infrahub_sdk.transforms import InfrahubTransform
+from models.device import Device
 
 
 class DeviceTransformJson(InfrahubTransform):
@@ -12,7 +12,7 @@ class DeviceTransformJson(InfrahubTransform):
     url: str = "device-json"
 
     async def transform(self, data: dict[str, Any]) -> dict[str, Any]:
-        device: Device = get_device(data)
+        device: Device = Device.create(data)
         return device.json_config()
 
 
@@ -21,5 +21,5 @@ class DeviceTransformCli(InfrahubTransform):
     url: str = "device-cli"
 
     async def transform(self, data: dict[str, Any]) -> str:
-        device: Device = get_device(data)
+        device: Device = Device.create(data)
         return device.cli_config()

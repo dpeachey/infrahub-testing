@@ -1,7 +1,6 @@
-from __future__ import annotations
+from typing import List, Self
 
-from typing import List
-
+from models.abstract import AbstractDevice
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
 
@@ -287,7 +286,7 @@ class InterfaceListEntry(BaseModel):
     ]
 
 
-class InterfacesContainer(BaseModel):
+class OpenconfigInterfacesConfig(BaseModel):
     """
     Top level container for interfaces, including configuration
     and state data.
@@ -300,3 +299,52 @@ class InterfacesContainer(BaseModel):
     interface: Annotated[
         List[InterfaceListEntry], Field(alias="openconfig-interfaces:interface")
     ]
+
+    @classmethod
+    def create(cls, device: AbstractDevice) -> Self:
+        return cls(
+            interface=[
+                InterfaceListEntry(
+                    name=interface.name,
+                    config=ConfigContainer(
+                        enabled=interface.enabled,
+                        description=interface.description
+                        if interface.description
+                        else "** missing **",
+                    ),
+                    subinterfaces=SubinterfacesContainer(
+                        subinterface=[
+                            SubinterfaceListEntry(
+                                index=idx,
+                                config=ConfigContainer(
+                                    enabled=interface.enabled,
+                                    description=interface.description
+                                    if interface.description
+                                    else "** missing **",
+                                ),
+                                ipv4=Ipv4Container(
+                                    addresses=AddressesContainer(
+                                        address=[
+                                            AddressListEntry(
+                                                ip=ip.address.split("/")[0],
+                                                config=ConfigContainerAddressListEntry(
+                                                    ip=ip.address.split("/")[0],
+                                                    prefix_length=ip.address.split("/")[
+                                                        1
+                                                    ],
+                                                ),
+                                            )
+                                        ]
+                                    ),
+                                    config=ConfigContainerIpv4(
+                                        enabled=interface.enabled,
+                                    ),
+                                ),
+                            )
+                            for idx, ip in enumerate(interface.ip_addresses)
+                        ]
+                    ),
+                )
+                for interface in device.interfaces
+            ]
+        )
