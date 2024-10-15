@@ -1,24 +1,14 @@
 from typing import Self
 
+from models.base import BaseConfigModel
 from models.data import DeviceData
 from models.interfaces_arista import AristaInterfacesConfig
 from models.interfaces_oc import OpenconfigInterfacesConfig
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import Field
 from typing_extensions import Annotated
 
 
-class BaseDeviceConfig(BaseModel):
-    model_config = ConfigDict(
-        extra="forbid",
-        populate_by_name=True,
-    )
-
-    @staticmethod
-    def cli_config() -> str:
-        return "Not implemented"
-
-
-class DefaultDeviceConfig(BaseDeviceConfig):
+class DefaultDeviceConfig(BaseConfigModel):
     interfaces: Annotated[
         OpenconfigInterfacesConfig,
         Field(None, alias="openconfig-interfaces:interfaces"),
@@ -32,7 +22,7 @@ class DefaultDeviceConfig(BaseDeviceConfig):
         return cls(interfaces=interfaces)
 
 
-class AristaDeviceConfig(BaseDeviceConfig):
+class AristaDeviceConfig(BaseConfigModel):
     interfaces: AristaInterfacesConfig
 
     @classmethod

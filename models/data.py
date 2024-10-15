@@ -1,12 +1,6 @@
 from typing import Any, Self
 
-from pydantic import BaseModel, ConfigDict
-
-
-class BaseDataModel(BaseModel):
-    model_config = ConfigDict(
-        extra_fields=False,
-    )
+from models.base import BaseDataModel
 
 
 class IpAddressData(BaseDataModel):

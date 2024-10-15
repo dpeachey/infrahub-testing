@@ -1,7 +1,8 @@
 from typing import List, Self
 
+from models.base import BaseConfigModel
 from models.data import DeviceData
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import ConfigDict, Field, RootModel
 from typing_extensions import Annotated
 
 
@@ -149,103 +150,75 @@ class PrefixLengthLeaf(RootModel[int]):
     """
 
 
-class ConfigContainer(BaseModel):
+class ConfigContainer(BaseConfigModel):
     """
     Configurable items at the global, physical interface
     level
     """
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        extra="forbid",
-    )
     description: Annotated[
         DescriptionLeaf, Field(alias="openconfig-interfaces:description")
     ]
     enabled: Annotated[EnabledLeaf, Field(True, alias="openconfig-interfaces:enabled")]
 
 
-class ConfigContainerIpv4(BaseModel):
+class ConfigContainerIpv4(BaseConfigModel):
     """
     Configurable items at the global, physical interface
     level
     """
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        extra="forbid",
-    )
     enabled: Annotated[EnabledLeaf, Field(True, alias="openconfig-interfaces:enabled")]
 
 
-class ConfigContainerAddressListEntry(BaseModel):
+class ConfigContainerAddressListEntry(BaseConfigModel):
     """
     Configuration data for each configured IPv4
     address on the interface
     """
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        extra="forbid",
-    )
     ip: Annotated[IpLeaf, Field(None, alias="openconfig-if-ip:ip")]
     prefix_length: Annotated[
         PrefixLengthLeaf, Field(None, alias="openconfig-if-ip:prefix-length")
     ]
 
 
-class AddressListEntry(BaseModel):
+class AddressListEntry(BaseConfigModel):
     """
     The list of configured IPv4 addresses on the interface.
     """
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        extra="forbid",
-    )
     ip: Annotated[IpLeaf, Field(None, alias="openconfig-if-ip:ip")]
     config: Annotated[
         ConfigContainerAddressListEntry, Field(None, alias="openconfig-if-ip:config")
     ]
 
 
-class AddressesContainer(BaseModel):
+class AddressesContainer(BaseConfigModel):
     """
     Enclosing container for address list
     """
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        extra="forbid",
-    )
     address: Annotated[List[AddressListEntry], Field(alias="openconfig-if-ip:address")]
 
 
-class Ipv4Container(BaseModel):
+class Ipv4Container(BaseConfigModel):
     """
     Parameters for the IPv4 address family.
     """
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        extra="forbid",
-    )
     addresses: Annotated[
         AddressesContainer, Field(None, alias="openconfig-if-ip:addresses")
     ]
     config: Annotated[ConfigContainerIpv4, Field(None, alias="openconfig-if-ip:config")]
 
 
-class SubinterfaceListEntry(BaseModel):
+class SubinterfaceListEntry(BaseConfigModel):
     """
     The list of subinterfaces (logical interfaces) associated
     with a physical interface
     """
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        extra="forbid",
-    )
     index: Annotated[IfindexLeaf, Field(None, alias="openconfig-interfaces:index")]
     config: Annotated[
         ConfigContainer, Field(None, alias="openconfig-interfaces:config")
@@ -253,30 +226,22 @@ class SubinterfaceListEntry(BaseModel):
     ipv4: Annotated[Ipv4Container, Field(None, alias="openconfig-if-ip:ipv4")]
 
 
-class SubinterfacesContainer(BaseModel):
+class SubinterfacesContainer(BaseConfigModel):
     """
     Enclosing container for the list of subinterfaces associated
     with a physical interface
     """
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        extra="forbid",
-    )
     subinterface: Annotated[
         List[SubinterfaceListEntry], Field(alias="openconfig-interfaces:subinterface")
     ]
 
 
-class InterfaceListEntry(BaseModel):
+class InterfaceListEntry(BaseConfigModel):
     """
     The list of named interfaces on the device.
     """
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        extra="forbid",
-    )
     name: Annotated[NameLeaf, Field(None, alias="openconfig-interfaces:name")]
     config: Annotated[
         ConfigContainer, Field(None, alias="openconfig-interfaces:config")
@@ -286,7 +251,7 @@ class InterfaceListEntry(BaseModel):
     ]
 
 
-class OpenconfigInterfacesConfig(BaseModel):
+class OpenconfigInterfacesConfig(BaseConfigModel):
     """
     Top level container for interfaces, including configuration
     and state data.

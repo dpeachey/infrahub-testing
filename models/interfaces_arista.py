@@ -1,14 +1,10 @@
 from typing import Self
 
+from models.base import BaseConfigModel
 from models.data import DeviceData
-from pydantic import BaseModel, ConfigDict
 
 
-class AristaInterfacesConfig(BaseModel):
-    model_config = ConfigDict(
-        extra="forbid",
-        populate_by_name=True,
-    )
+class AristaInterfacesConfig(BaseConfigModel):
     interface: list[str]
 
     @classmethod

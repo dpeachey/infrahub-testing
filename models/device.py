@@ -1,8 +1,8 @@
 from typing import Any, Self
 
+from models.base import BaseConfigModel
 from models.config import (
     AristaDeviceConfig,
-    BaseDeviceConfig,
     DefaultDeviceConfig,
 )
 from models.data import DeviceData
@@ -11,7 +11,7 @@ from models.data import DeviceData
 class Device:
     def __init__(self, device_data: DeviceData) -> None:
         self._device_data: DeviceData = device_data
-        self._device_config: BaseDeviceConfig = self.get_device_config()
+        self._device_config: BaseConfigModel = self.get_device_config()
         self.name: str = device_data.name
         self.type: str = device_data.type
 
@@ -27,7 +27,7 @@ class Device:
     def cli_config(self) -> str:
         return self._device_config.cli_config()
 
-    def get_device_config(self) -> BaseDeviceConfig:
+    def get_device_config(self) -> BaseConfigModel:
         match self._device_data.platform:
             case "Arista EOS":
                 device_config: AristaDeviceConfig = AristaDeviceConfig.create(
