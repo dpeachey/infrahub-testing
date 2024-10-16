@@ -3,8 +3,8 @@ import sys
 sys.path.append(".")
 from typing import Any
 
+from device import Device
 from infrahub_sdk.transforms import InfrahubTransform
-from models.device import Device
 
 
 class DeviceTransformJson(InfrahubTransform):
