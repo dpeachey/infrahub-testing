@@ -7,9 +7,8 @@ class BaseDeviceConfigModel(BaseModel):
         populate_by_name=True,
     )
 
-    @staticmethod
-    def cli_config() -> str:
-        return "CLI config is not supported for this device"
+    def cli_config(self) -> str:
+        return f"CLI config is not supported for {type(self).__name__}"
 
 
 class BaseConfigModel(BaseModel):
@@ -21,5 +20,5 @@ class BaseConfigModel(BaseModel):
 
 class BaseDataModel(BaseModel):
     model_config = ConfigDict(
-        extra_fields=False,
+        extra="forbid",
     )
