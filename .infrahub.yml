@@ -2,10 +2,10 @@
 python_transforms:
   - name: device_transform_json
     class_name: DeviceTransformJson
-    file_path: "device_transform.py"
+    file_path: "transforms/device_transform.py"
   - name: device_transform_cli
     class_name: DeviceTransformCli
-    file_path: "device_transform.py"
+    file_path: "transforms/device_transform.py"
 
 queries:
   - name: device_query
