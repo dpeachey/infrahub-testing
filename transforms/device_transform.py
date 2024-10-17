@@ -79,8 +79,16 @@ class AristaInterfacesConfig(BaseConfigModel):
     def create(cls, device_data: DeviceData) -> Self:
         return cls(
             interface=[
-                f"interface {interface.name}\n  blah\n"
+                (
+                    f"interface {interface.name}\n"
+                    f"   description {interface.description if interface.description else "** missing **"}\n"
+                    "   no switchport\n"
+                    f"   ip address {ip.address}\n"
+                    f"   {'no shutdown' if interface.enabled else 'shutdown'}\n"
+                    "!\n"
+                )
                 for interface in device_data.interfaces
+                for ip in interface.ip_addresses
             ]
         )
 
