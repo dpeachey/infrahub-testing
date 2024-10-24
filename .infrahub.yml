@@ -3,6 +3,9 @@ python_transforms:
   - name: device_transform_json
     class_name: DeviceTransformJson
     file_path: "transforms/device_transform.py"
+  - name: device_transform_yaml
+    class_name: DeviceTransformYaml
+    file_path: "transforms/device_transform.py"
   - name: device_transform_cli
     class_name: DeviceTransformCli
     file_path: "transforms/device_transform.py"
@@ -21,6 +24,13 @@ artifact_definitions:
     content_type: "application/json"
     targets: "all_devices"
     transformation: "device_transform_json"
+  - name: "device_config_yaml"
+    artifact_name: "Device config YAML"
+    parameters:
+      device: "name__value"
+    content_type: "text/yaml"
+    targets: "all_devices"
+    transformation: "device_transform_yaml"
   - name: "device_config_cli"
     artifact_name: "Device config CLI"
     parameters:

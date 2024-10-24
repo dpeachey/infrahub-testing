@@ -1,5 +1,6 @@
 from typing import Any, List, Self
 
+import yaml
 from infrahub_sdk.transforms import InfrahubTransform
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
@@ -459,6 +460,9 @@ class Device:
     def json_config(self) -> dict[str, Any]:
         return self._device_config.dict(by_alias=True, exclude_defaults=True)
 
+    def yaml_config(self) -> dict[str, Any]:
+        return yaml.dump(self._device_config.dict(by_alias=True, exclude_defaults=True))
+
     def cli_config(self) -> str:
         return self._device_config.cli_config()
 
@@ -470,6 +474,15 @@ class DeviceTransformJson(InfrahubTransform):
     async def transform(self, data: dict[str, Any]) -> dict[str, Any]:
         device: Device = Device.create(data)
         return device.json_config()
+
+
+class DeviceTransformYaml(InfrahubTransform):
+    query: str = "device_query"
+    url: str = "device-yaml"
+
+    async def transform(self, data: dict[str, Any]) -> dict[str, Any]:
+        device: Device = Device.create(data)
+        return device.yaml_config()
 
 
 class DeviceTransformCli(InfrahubTransform):
