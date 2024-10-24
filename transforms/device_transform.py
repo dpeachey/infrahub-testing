@@ -73,28 +73,28 @@ class BaseConfigModel(BaseModel):
     )
 
 
-class AristaInterfacesConfig(BaseConfigModel):
-    interface: list[str]
+# class AristaInterfacesConfig(BaseConfigModel):
+#     interface: list[str]
 
-    @classmethod
-    def create(cls, device_data: DeviceData) -> Self:
-        return cls(
-            interface=[
-                (
-                    f"interface {interface.name}\n"
-                    f"   description {interface.description if interface.description else "** missing **"}\n"
-                    "   no switchport\n"
-                    f"   ip address {ip.address}\n"
-                    f"   {'no shutdown' if interface.enabled else 'shutdown'}\n"
-                    "!\n"
-                )
-                for interface in device_data.interfaces
-                for ip in interface.ip_addresses
-            ]
-        )
+#     @classmethod
+#     def create(cls, device_data: DeviceData) -> Self:
+#         return cls(
+#             interface=[
+#                 (
+#                     f"interface {interface.name}\n"
+#                     f"   description {interface.description if interface.description else "** missing **"}\n"
+#                     "   no switchport\n"
+#                     f"   ip address {ip.address}\n"
+#                     f"   {'no shutdown' if interface.enabled else 'shutdown'}\n"
+#                     "!\n"
+#                 )
+#                 for interface in device_data.interfaces
+#                 for ip in interface.ip_addresses
+#             ]
+#         )
 
-    def cli_config(self) -> str:
-        return "".join(interface for interface in self.interface)
+#     def cli_config(self) -> str:
+#         return "".join(interface for interface in self.interface)
 
 
 class Ipv4AddressType(RootModel[str]):
@@ -421,17 +421,17 @@ class DefaultDeviceConfig(BaseDeviceConfigModel):
 
 
 class AristaDeviceConfig(BaseDeviceConfigModel):
-    interfaces: AristaInterfacesConfig
+    interfaces: Annotated[
+        OpenconfigInterfacesConfig,
+        Field(None, alias="openconfig-interfaces:interfaces"),
+    ]
 
     @classmethod
     def create(cls, device_data: DeviceData) -> Self:
-        interfaces: AristaInterfacesConfig = AristaInterfacesConfig.create(
+        interfaces: OpenconfigInterfacesConfig = OpenconfigInterfacesConfig.create(
             device_data=device_data
         )
         return cls(interfaces=interfaces)
-
-    def cli_config(self) -> str:
-        return self.interfaces.cli_config()
 
 
 class DeviceConfig(BaseDeviceConfigModel):
@@ -463,8 +463,8 @@ class Device:
     def yaml_config(self) -> dict[str, Any]:
         return yaml.dump(self._device_config.dict(by_alias=True, exclude_defaults=True))
 
-    def cli_config(self) -> str:
-        return self._device_config.cli_config()
+    # def cli_config(self) -> str:
+    #     return self._device_config.cli_config()
 
 
 class DeviceTransformJson(InfrahubTransform):
@@ -485,10 +485,10 @@ class DeviceTransformYaml(InfrahubTransform):
         return device.yaml_config()
 
 
-class DeviceTransformCli(InfrahubTransform):
-    query: str = "device_query"
-    url: str = "device-cli"
+# class DeviceTransformCli(InfrahubTransform):
+#     query: str = "device_query"
+#     url: str = "device-cli"
 
-    async def transform(self, data: dict[str, Any]) -> str:
-        device: Device = Device.create(data)
-        return device.cli_config()
+#     async def transform(self, data: dict[str, Any]) -> str:
+#         device: Device = Device.create(data)
+#         return device.cli_config()
