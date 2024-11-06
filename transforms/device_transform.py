@@ -50,7 +50,7 @@ class DeviceData(BaseDataModel):
                     else [],
                 )
                 for interface in infra_device["interfaces"]["edges"]
-                if not interface.get("l2_mode")
+                if not interface["node"].get("l2_mode")
             ]
             if infra_device.get("interfaces")
             else [],
