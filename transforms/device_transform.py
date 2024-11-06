@@ -1,4 +1,4 @@
-from typing import Any, List, Self
+from typing import Any, List, Optional, Self
 
 import yaml
 from infrahub_sdk.transforms import InfrahubTransform
@@ -252,17 +252,7 @@ class ConfigContainer(BaseConfigModel):
         DescriptionLeaf, Field(alias="openconfig-interfaces:description")
     ]
     enabled: Annotated[EnabledLeaf, Field(True, alias="openconfig-interfaces:enabled")]
-
-
-class ConfigContainerSubInterface(BaseConfigModel):
-    """
-    Configurable items at the global, sub interface
-    level
-    """
-
-    description: Annotated[
-        DescriptionLeaf, Field(alias="openconfig-interfaces:description")
-    ]
+    name: Annotated[Optional[NameLeaf], Field(None, alias="openconfig-interfaces:name")]
 
 
 class ConfigContainerIpv4(BaseConfigModel):
@@ -375,6 +365,7 @@ class OpenconfigInterfacesConfig(BaseConfigModel):
                 InterfaceListEntry(
                     name=interface.name,
                     config=ConfigContainer(
+                        name=interface.name,
                         enabled=interface.enabled,
                         description=interface.description
                         if interface.description
