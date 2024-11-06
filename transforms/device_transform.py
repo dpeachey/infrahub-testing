@@ -460,10 +460,10 @@ class Device:
         return cls(device_data=device_data)
 
     def json_config(self) -> dict[str, Any]:
-        return self._device_config.dict(by_alias=True, exclude_defaults=True)
+        return self._device_config.interfaces.dict(by_alias=True, exclude_defaults=True)
 
     def yaml_config(self) -> dict[str, Any]:
-        return yaml.dump(self._device_config.dict(exclude_defaults=True))
+        return yaml.dump(self._device_config.interfaces.dict(exclude_defaults=True))
 
     # def cli_config(self) -> str:
     #     return self._device_config.cli_config()
