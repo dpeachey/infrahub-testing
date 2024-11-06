@@ -46,7 +46,19 @@ query DeviceQuery($device: String!) {
               enabled {
                 value
               }
-              ... on InfraInterfaceL2 {
+              ... on InfraLagInterfaceL2 {
+                l2_mode {
+                  value
+                }
+                untagged_vlan {
+                  node {
+                    vlan_id {
+                      value
+                    }
+                  }
+                }
+              }
+              ... on InfraLagInterfaceL2 {
                 l2_mode {
                   value
                 }

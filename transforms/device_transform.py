@@ -50,6 +50,7 @@ class DeviceData(BaseDataModel):
                     else [],
                 )
                 for interface in infra_device["interfaces"]["edges"]
+                if not interface.get("l2_mode")
             ]
             if infra_device.get("interfaces")
             else [],
@@ -253,6 +254,17 @@ class ConfigContainer(BaseConfigModel):
     enabled: Annotated[EnabledLeaf, Field(True, alias="openconfig-interfaces:enabled")]
 
 
+class ConfigContainerSubInterface(BaseConfigModel):
+    """
+    Configurable items at the global, sub interface
+    level
+    """
+
+    description: Annotated[
+        DescriptionLeaf, Field(alias="openconfig-interfaces:description")
+    ]
+
+
 class ConfigContainerIpv4(BaseConfigModel):
     """
     Configurable items at the global, physical interface
@@ -373,7 +385,6 @@ class OpenconfigInterfacesConfig(BaseConfigModel):
                             SubinterfaceListEntry(
                                 index=idx,
                                 config=ConfigContainer(
-                                    enabled=interface.enabled,
                                     description=interface.description
                                     if interface.description
                                     else "** missing **",
@@ -458,10 +469,10 @@ class Device:
         return cls(device_data=device_data)
 
     def json_config(self) -> dict[str, Any]:
-        return self._device_config.dict(by_alias=True, exclude_defaults=True)
+        return self._device_config.dict(exclude_defaults=True)
 
     def yaml_config(self) -> dict[str, Any]:
-        return yaml.dump(self._device_config.dict(by_alias=True, exclude_defaults=True))
+        return yaml.dump(self._device_config.dict(exclude_defaults=True))
 
     # def cli_config(self) -> str:
     #     return self._device_config.cli_config()
