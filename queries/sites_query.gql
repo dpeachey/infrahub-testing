@@ -1,0 +1,14 @@
+query SiteQuery($site: String!) {
+  LocationSite(name__value: $site) {
+    edges {
+      node {
+        name {
+          value
+        }
+        city {
+          value
+        }
+      }
+    }
+  }
+}

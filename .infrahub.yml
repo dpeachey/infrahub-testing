@@ -11,6 +11,8 @@ queries:
     file_path: "queries/all_devices_query.gql"
   - name: loopback_query
     file_path: "queries/loopback_query.gql"
+  - name: sites_query
+    file_path: "queries/sites_query.gql"
 
 artifact_definitions:
   - name: "device_config_yaml"
@@ -25,3 +27,11 @@ check_definitions:
   - name: "loopback_check"
     class_name: "LoopbackCheck"
     file_path: "checks/loopback_check.py"
+# generator_definitions:
+#   - name: device_generator
+#     file_path: "generators/device_generator.py"
+#     targets: all_sites
+#     query: sites_query
+#     class_name: DeviceGenerator
+#     parameters:
+#       name: "name__value"
