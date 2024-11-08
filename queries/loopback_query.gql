@@ -1,0 +1,29 @@
+query LoopbackQuery {
+  InfraInterfaceL3(role__value: "loopback") {
+    edges {
+      node {
+        name {
+          value
+        }
+        description {
+          value
+        }
+        enabled {
+          value
+        }
+        role {
+          value
+        }
+        ip_addresses {
+          edges {
+            node {
+              address {
+                value
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
