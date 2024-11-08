@@ -248,11 +248,9 @@ class ConfigContainer(BaseConfigModel):
     level
     """
 
-    description: Annotated[
-        DescriptionLeaf, Field(alias="openconfig-interfaces:description")
-    ]
-    enabled: Annotated[EnabledLeaf, Field(True, alias="openconfig-interfaces:enabled")]
-    name: Annotated[Optional[NameLeaf], Field(None, alias="openconfig-interfaces:name")]
+    description: Annotated[DescriptionLeaf, Field(alias="description")]
+    enabled: Annotated[EnabledLeaf, Field(True, alias="enabled")]
+    name: Annotated[Optional[NameLeaf], Field(None, alias="name")]
 
 
 class ConfigContainerIpv4(BaseConfigModel):
@@ -261,7 +259,7 @@ class ConfigContainerIpv4(BaseConfigModel):
     level
     """
 
-    enabled: Annotated[EnabledLeaf, Field(True, alias="openconfig-interfaces:enabled")]
+    enabled: Annotated[EnabledLeaf, Field(True, alias="enabled")]
 
 
 class ConfigContainerAddressListEntry(BaseConfigModel):
@@ -270,10 +268,8 @@ class ConfigContainerAddressListEntry(BaseConfigModel):
     address on the interface
     """
 
-    ip: Annotated[IpLeaf, Field(None, alias="openconfig-if-ip:ip")]
-    prefix_length: Annotated[
-        PrefixLengthLeaf, Field(None, alias="openconfig-if-ip:prefix-length")
-    ]
+    ip: Annotated[IpLeaf, Field(None, alias="ip")]
+    prefix_length: Annotated[PrefixLengthLeaf, Field(None, alias="prefix-length")]
 
 
 class AddressListEntry(BaseConfigModel):
@@ -281,10 +277,8 @@ class AddressListEntry(BaseConfigModel):
     The list of configured IPv4 addresses on the interface.
     """
 
-    ip: Annotated[IpLeaf, Field(None, alias="openconfig-if-ip:ip")]
-    config: Annotated[
-        ConfigContainerAddressListEntry, Field(None, alias="openconfig-if-ip:config")
-    ]
+    ip: Annotated[IpLeaf, Field(None, alias="ip")]
+    config: Annotated[ConfigContainerAddressListEntry, Field(None, alias="config")]
 
 
 class AddressesContainer(BaseConfigModel):
@@ -292,7 +286,7 @@ class AddressesContainer(BaseConfigModel):
     Enclosing container for address list
     """
 
-    address: Annotated[List[AddressListEntry], Field(alias="openconfig-if-ip:address")]
+    address: Annotated[List[AddressListEntry], Field(alias="address")]
 
 
 class Ipv4Container(BaseConfigModel):
@@ -300,10 +294,8 @@ class Ipv4Container(BaseConfigModel):
     Parameters for the IPv4 address family.
     """
 
-    addresses: Annotated[
-        AddressesContainer, Field(None, alias="openconfig-if-ip:addresses")
-    ]
-    config: Annotated[ConfigContainerIpv4, Field(None, alias="openconfig-if-ip:config")]
+    addresses: Annotated[AddressesContainer, Field(None, alias="addresses")]
+    config: Annotated[ConfigContainerIpv4, Field(None, alias="config")]
 
 
 class SubinterfaceListEntry(BaseConfigModel):
@@ -312,11 +304,9 @@ class SubinterfaceListEntry(BaseConfigModel):
     with a physical interface
     """
 
-    index: Annotated[IfindexLeaf, Field(None, alias="openconfig-interfaces:index")]
-    config: Annotated[
-        ConfigContainer, Field(None, alias="openconfig-interfaces:config")
-    ]
-    ipv4: Annotated[Ipv4Container, Field(None, alias="openconfig-if-ip:ipv4")]
+    index: Annotated[IfindexLeaf, Field(None, alias="index")]
+    config: Annotated[ConfigContainer, Field(None, alias="config")]
+    ipv4: Annotated[Ipv4Container, Field(None, alias="ipv4")]
 
 
 class SubinterfacesContainer(BaseConfigModel):
@@ -325,9 +315,7 @@ class SubinterfacesContainer(BaseConfigModel):
     with a physical interface
     """
 
-    subinterface: Annotated[
-        List[SubinterfaceListEntry], Field(alias="openconfig-interfaces:subinterface")
-    ]
+    subinterface: Annotated[List[SubinterfaceListEntry], Field(alias="subinterface")]
 
 
 class InterfaceListEntry(BaseConfigModel):
@@ -335,13 +323,9 @@ class InterfaceListEntry(BaseConfigModel):
     The list of named interfaces on the device.
     """
 
-    name: Annotated[NameLeaf, Field(None, alias="openconfig-interfaces:name")]
-    config: Annotated[
-        ConfigContainer, Field(None, alias="openconfig-interfaces:config")
-    ]
-    subinterfaces: Annotated[
-        SubinterfacesContainer, Field(None, alias="openconfig-interfaces:subinterfaces")
-    ]
+    name: Annotated[NameLeaf, Field(None, alias="name")]
+    config: Annotated[ConfigContainer, Field(None, alias="config")]
+    subinterfaces: Annotated[SubinterfacesContainer, Field(None, alias="subinterfaces")]
 
 
 class OpenconfigInterfacesConfig(BaseConfigModel):
@@ -354,9 +338,7 @@ class OpenconfigInterfacesConfig(BaseConfigModel):
         populate_by_name=True,
         extra="forbid",
     )
-    interface: Annotated[
-        List[InterfaceListEntry], Field(alias="openconfig-interfaces:interface")
-    ]
+    interface: Annotated[List[InterfaceListEntry], Field(alias="interface")]
 
     @classmethod
     def create(cls, device_data: DeviceData) -> Self:
@@ -411,7 +393,7 @@ class OpenconfigInterfacesConfig(BaseConfigModel):
 class DefaultDeviceConfig(BaseDeviceConfigModel):
     interfaces: Annotated[
         OpenconfigInterfacesConfig,
-        Field(None, alias="openconfig-interfaces:interfaces"),
+        Field(None, alias="interfaces"),
     ]
 
     @classmethod
@@ -425,7 +407,7 @@ class DefaultDeviceConfig(BaseDeviceConfigModel):
 class AristaDeviceConfig(BaseDeviceConfigModel):
     interfaces: Annotated[
         OpenconfigInterfacesConfig,
-        Field(None, alias="openconfig-interfaces:interfaces"),
+        Field(None, alias="interfaces"),
     ]
 
     @classmethod
@@ -459,23 +441,25 @@ class Device:
         device_data: DeviceData = DeviceData.create(infra_device=infra_device)
         return cls(device_data=device_data)
 
-    def json_config(self) -> dict[str, Any]:
-        return self._device_config.interfaces.dict(by_alias=True, exclude_defaults=True)
+    # def json_config(self) -> dict[str, Any]:
+    #     return self._device_config.interfaces.dict(by_alias=True, exclude_defaults=True)
 
     def yaml_config(self) -> dict[str, Any]:
-        return yaml.dump(self._device_config.interfaces.dict(exclude_defaults=True))
+        return yaml.dump(
+            self._device_config.interfaces.dict(by_alias=True, exclude_defaults=True)
+        )
 
     # def cli_config(self) -> str:
     #     return self._device_config.cli_config()
 
 
-class DeviceTransformJson(InfrahubTransform):
-    query: str = "device_query"
-    url: str = "device-json"
+# class DeviceTransformJson(InfrahubTransform):
+#     query: str = "device_query"
+#     url: str = "device-json"
 
-    async def transform(self, data: dict[str, Any]) -> dict[str, Any]:
-        device: Device = Device.create(data)
-        return device.json_config()
+#     async def transform(self, data: dict[str, Any]) -> dict[str, Any]:
+#         device: Device = Device.create(data)
+#         return device.json_config()
 
 
 class DeviceTransformYaml(InfrahubTransform):
