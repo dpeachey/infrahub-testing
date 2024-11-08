@@ -74,30 +74,6 @@ class BaseConfigModel(BaseModel):
     )
 
 
-# class AristaInterfacesConfig(BaseConfigModel):
-#     interface: list[str]
-
-#     @classmethod
-#     def create(cls, device_data: DeviceData) -> Self:
-#         return cls(
-#             interface=[
-#                 (
-#                     f"interface {interface.name}\n"
-#                     f"   description {interface.description if interface.description else "** missing **"}\n"
-#                     "   no switchport\n"
-#                     f"   ip address {ip.address}\n"
-#                     f"   {'no shutdown' if interface.enabled else 'shutdown'}\n"
-#                     "!\n"
-#                 )
-#                 for interface in device_data.interfaces
-#                 for ip in interface.ip_addresses
-#             ]
-#         )
-
-#     def cli_config(self) -> str:
-#         return "".join(interface for interface in self.interface)
-
-
 class Ipv4AddressType(RootModel[str]):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -441,25 +417,10 @@ class Device:
         device_data: DeviceData = DeviceData.create(infra_device=infra_device)
         return cls(device_data=device_data)
 
-    # def json_config(self) -> dict[str, Any]:
-    #     return self._device_config.interfaces.dict(by_alias=True, exclude_defaults=True)
-
     def yaml_config(self) -> dict[str, Any]:
         return yaml.dump(
             self._device_config.interfaces.dict(by_alias=True, exclude_defaults=True)
         )
-
-    # def cli_config(self) -> str:
-    #     return self._device_config.cli_config()
-
-
-# class DeviceTransformJson(InfrahubTransform):
-#     query: str = "device_query"
-#     url: str = "device-json"
-
-#     async def transform(self, data: dict[str, Any]) -> dict[str, Any]:
-#         device: Device = Device.create(data)
-#         return device.json_config()
 
 
 class DeviceTransformYaml(InfrahubTransform):
@@ -469,12 +430,3 @@ class DeviceTransformYaml(InfrahubTransform):
     async def transform(self, data: dict[str, Any]) -> dict[str, Any]:
         device: Device = Device.create(data)
         return device.yaml_config()
-
-
-# class DeviceTransformCli(InfrahubTransform):
-#     query: str = "device_query"
-#     url: str = "device-cli"
-
-#     async def transform(self, data: dict[str, Any]) -> str:
-#         device: Device = Device.create(data)
-#         return device.cli_config()
