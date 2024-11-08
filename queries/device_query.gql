@@ -46,6 +46,9 @@ query DeviceQuery($device: String!) {
               enabled {
                 value
               }
+              role {
+                value
+              }
               ... on InfraLagInterfaceL2 {
                 l2_mode {
                   value
