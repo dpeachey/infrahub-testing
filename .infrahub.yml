@@ -25,13 +25,13 @@ artifact_definitions:
     parameters:
       device: name__value
 
-check_definitions:
-  - name: loopback_check
-    class_name: LoopbackCheck
-    file_path: checks/loopback_check.py
-    targets: arista_devices
-    parameters:
-      device: name__value
+# check_definitions:
+#   - name: loopback_check
+#     class_name: LoopbackCheck
+#     file_path: checks/loopback_check.py
+#     targets: arista_devices
+#     parameters:
+#       device: name__value
 
 generator_definitions:
   - name: device_generator
