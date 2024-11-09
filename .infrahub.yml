@@ -11,6 +11,8 @@ queries:
     file_path: queries/all_devices_query.gql
   - name: loopback_query
     file_path: queries/loopback_query.gql
+  - name: device_loopback_query
+    file_path: queries/device_loopback_query.gql
   - name: sites_query
     file_path: queries/sites_query.gql
 
