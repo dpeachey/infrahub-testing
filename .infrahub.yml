@@ -27,11 +27,12 @@ check_definitions:
   - name: "loopback_check"
     class_name: "LoopbackCheck"
     file_path: "checks/loopback_check.py"
-# generator_definitions:
-#   - name: device_generator
-#     file_path: "generators/device_generator.py"
-#     targets: all_sites
-#     query: sites_query
-#     class_name: DeviceGenerator
-#     parameters:
-#       name: "name__value"
+
+generator_definitions:
+  - name: device_generator
+    file_path: "generators/device_generator.py"
+    targets: all_sites
+    query: sites_query
+    class_name: DeviceGenerator
+    parameters:
+      name: "name__value"
