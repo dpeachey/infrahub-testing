@@ -1,4 +1,4 @@
-query DeviceQuery($device: String!) {
+query DeviceLoopbackQuery($device: String!) {
   InfraDevice(name__value: $device) {
     edges {
       node {
