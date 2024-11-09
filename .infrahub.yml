@@ -35,4 +35,4 @@ generator_definitions:
     query: sites_query
     class_name: DeviceGenerator
     parameters:
-      name: "name__value"
+      site: "name__value"
