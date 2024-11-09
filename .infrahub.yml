@@ -2,37 +2,40 @@
 python_transforms:
   - name: device_transform_yaml
     class_name: DeviceTransformYaml
-    file_path: "transforms/device_transform.py"
+    file_path: transforms/device_transform.py
 
 queries:
   - name: device_query
-    file_path: "queries/device_query.gql"
+    file_path: queries/device_query.gql
   - name: all_devices_query
-    file_path: "queries/all_devices_query.gql"
+    file_path: queries/all_devices_query.gql
   - name: loopback_query
-    file_path: "queries/loopback_query.gql"
+    file_path: queries/loopback_query.gql
   - name: sites_query
-    file_path: "queries/sites_query.gql"
+    file_path: queries/sites_query.gql
 
 artifact_definitions:
-  - name: "device_config_yaml"
-    artifact_name: "Device config YAML"
+  - name: device_config_yaml
+    artifact_name: Device config YAML
+    content_type: text/plain
+    targets: arista_devices
+    transformation: device_transform_yaml
     parameters:
-      device: "name__value"
-    content_type: "text/plain"
-    targets: "arista_devices"
-    transformation: "device_transform_yaml"
+      device: name__value
 
 check_definitions:
-  - name: "loopback_check"
-    class_name: "LoopbackCheck"
-    file_path: "checks/loopback_check.py"
+  - name: loopback_check
+    class_name: LoopbackCheck
+    file_path: checks/loopback_check.py
+    targets: arista_devices
+    parameters:
+      device: name__value
 
 generator_definitions:
   - name: device_generator
-    file_path: "generators/device_generator.py"
+    class_name: DeviceGenerator
+    file_path: generators/device_generator.py
     targets: all_sites
     query: sites_query
-    class_name: DeviceGenerator
     parameters:
-      site: "name__value"
+      site: name__value

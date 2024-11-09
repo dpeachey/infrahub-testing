@@ -1,0 +1,31 @@
+query DeviceQuery($device: String!) {
+  InfraDevice(name__value: $device) {
+    edges {
+      node {
+        name {
+          value
+        }
+        interfaces(role__value: "loopback") {
+          edges {
+            node {
+              role {
+                value
+              }
+              ... on InfraInterfaceL3 {
+                ip_addresses {
+                  edges {
+                    node {
+                      address {
+                        value
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
