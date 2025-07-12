@@ -85,13 +85,9 @@ class NokiaVlanIdConfig(BaseConfigModel):
     vlan_id: Annotated[int, Field(None, alias="vlan-id")]
 
 
-class NokiaVlanConfig(BaseConfigModel):
-    vlan: list[NokiaVlanIdConfig]
-
-
 class NokiaSwitchedVlanConfig(BaseConfigModel):
     interface_mode: Annotated[Literal["TRUNK", "ACCESS"], Field(None, alias="interface-mode")]
-    vlan: list[NokiaVlanConfig]
+    vlan: list[NokiaVlanIdConfig]
 
 
 class NokiaEthernetConfig(BaseConfigModel):
@@ -125,10 +121,7 @@ class NokiaInterfacesConfig(BaseConfigModel):
                             switched_vlan=[
                                 NokiaSwitchedVlanConfig(
                                     interface_mode="TRUNK" if interface.l2_mode == "Trunk" else "Access",
-                                    vlan=[
-                                        NokiaVlanConfig(vlan=[NokiaVlanIdConfig(vlan_id=vlan.vlan_id)])
-                                        for vlan in interface.vlans
-                                    ],
+                                    vlan=[NokiaVlanIdConfig(vlan_id=vlan.vlan_id) for vlan in interface.vlans],
                                 )
                             ]
                         ),
