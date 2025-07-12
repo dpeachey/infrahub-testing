@@ -104,7 +104,7 @@ class NokiaInterfaceConfig(BaseConfigModel):
     name: str
     description: str | None = None
     admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
-    vlan_tagging: bool | None = None
+    vlan_tagging: Annotated[bool | None, Field(None, alias="vlan-tagging")] = None
     subinterface: list[NokiaSubinterfaceConfig] | None = None
 
 
