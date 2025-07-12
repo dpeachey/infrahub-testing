@@ -8,6 +8,12 @@ query DeviceQuery($device: String!) {
         description {
           value
         }
+        status {
+          value
+        }
+        role {
+          value
+        }
         platform {
           node {
             name {
@@ -49,6 +55,9 @@ query DeviceQuery($device: String!) {
               role {
                 value
               }
+              status {
+                value
+              }
               ... on InfraLagInterfaceL2 {
                 l2_mode {
                   value
@@ -78,6 +87,20 @@ query DeviceQuery($device: String!) {
                   edges {
                     node {
                       address {
+                        value
+                      }
+                    }
+                  }
+                }
+              }
+              ... on InfraInterfaceL2 {
+                l2_mode {
+                  value
+                }
+                tagged_vlan {
+                  edges {
+                    node {
+                      vlan_id {
                         value
                       }
                     }
