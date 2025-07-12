@@ -85,19 +85,27 @@ class NokiaVlanIdConfig(BaseConfigModel):
     vlan_id: Annotated[int, Field(None, alias="vlan-id")]
 
 
-class NokiaSwitchedVlanConfig(BaseConfigModel):
-    interface_mode: Annotated[Literal["TRUNK", "ACCESS"], Field(None, alias="interface-mode")]
-    vlan: list[NokiaVlanIdConfig]
+class NokiaEncapConfig(BaseConfigModel):
+    single_tagged: Annotated[NokiaVlanIdConfig, Field(None, alias="single-tagged")]
 
 
-class NokiaEthernetConfig(BaseConfigModel):
-    switched_vlan: Annotated[list[NokiaSwitchedVlanConfig], Field(None, alias="switched-vlan")]
+class NokiaVlanConfig(BaseConfigModel):
+    encap: NokiaEncapConfig
+
+
+class NokiaSubinterfaceConfig(BaseConfigModel):
+    index: int
+    type: Literal["bridged"]
+    admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
+    vlan: NokiaVlanConfig
 
 
 class NokiaInterfaceConfig(BaseConfigModel):
     name: str
+    description: str | None = None
     admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
-    ethernet: NokiaEthernetConfig | None = None
+    vlan_tagging: bool | None = None
+    subinterface: list[NokiaSubinterfaceConfig] | None = None
 
 
 class NokiaInterfacesConfig(BaseConfigModel):
@@ -116,15 +124,20 @@ class NokiaInterfacesConfig(BaseConfigModel):
                 interfaces.append(
                     NokiaInterfaceConfig(
                         name=interface.name,
+                        description=interface.description,
                         admin_state="enable",
-                        ethernet=NokiaEthernetConfig(
-                            switched_vlan=[
-                                NokiaSwitchedVlanConfig(
-                                    interface_mode="TRUNK" if interface.l2_mode == "Trunk" else "Access",
-                                    vlan=[NokiaVlanIdConfig(vlan_id=vlan.vlan_id) for vlan in interface.vlans],
-                                )
-                            ]
-                        ),
+                        vlan_tagging=True,
+                        subinterface=[
+                            NokiaSubinterfaceConfig(
+                                index=vlan.vlan_id,
+                                type="bridged",
+                                admin_state="enable",
+                                vlan=NokiaVlanConfig(
+                                    encap=NokiaEncapConfig(single_tagged=NokiaVlanIdConfig(vlan_id=vlan.vlan_id))
+                                ),
+                            )
+                            for vlan in interface.vlans
+                        ],
                     )
                 )
             else:
