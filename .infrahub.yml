@@ -7,14 +7,14 @@ python_transforms:
 queries:
   - name: device_query
     file_path: queries/device_query.gql
-  - name: all_devices_query
-    file_path: queries/all_devices_query.gql
-  - name: loopback_query
-    file_path: queries/loopback_query.gql
-  - name: device_loopback_query
-    file_path: queries/device_loopback_query.gql
-  - name: sites_query
-    file_path: queries/sites_query.gql
+  # - name: all_devices_query
+  #   file_path: queries/all_devices_query.gql
+  # - name: loopback_query
+  #   file_path: queries/loopback_query.gql
+  # - name: device_loopback_query
+  #   file_path: queries/device_loopback_query.gql
+  # - name: sites_query
+  #   file_path: queries/sites_query.gql
 
 artifact_definitions:
   - name: device_config_yaml
