@@ -210,7 +210,7 @@ class NokiaProtocolsConfig(BaseConfigModel):
 class NokiaNetworkInstanceConfig(BaseConfigModel):
     name: str
     admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
-    protocols: list[NokiaProtocolsConfig]
+    protocols: NokiaProtocolsConfig
 
 
 class NokiaNetworkInstancesConfig(BaseConfigModel):
@@ -230,34 +230,32 @@ class NokiaNetworkInstancesConfig(BaseConfigModel):
                     NokiaNetworkInstanceConfig(
                         name="deafult",
                         admin_state="enable",
-                        protocols=[
-                            NokiaProtocolsConfig(
-                                bgp=NokiaBgpConfig(
-                                    admin_state="enable",
-                                    autonomous_system=bgp_session.local_as,
-                                    router_id=bgp_session.local_ip,
-                                    afi_safi=[
-                                        NokiaBgpAfiSafiConfig(
-                                            name="ipv4-unicast",
-                                            ipv4_unicast=NokiaBgpIPv4UnicastConfig(admin_state="enable"),
-                                        )
-                                    ],
-                                    group=[
-                                        NokiaBgpGroupConfig(
-                                            group_name=bgp_session.peer_group,
-                                            peer_as=bgp_session.remote_as,
-                                        )
-                                    ],
-                                    neighbor=[
-                                        NokiaBgpNeighborConfig(
-                                            admin_state="enable",
-                                            peer_address=bgp_session.remote_ip,
-                                            peer_group=bgp_session.peer_group,
-                                        )
-                                    ],
-                                )
+                        protocols=NokiaProtocolsConfig(
+                            bgp=NokiaBgpConfig(
+                                admin_state="enable",
+                                autonomous_system=bgp_session.local_as,
+                                router_id=bgp_session.local_ip,
+                                afi_safi=[
+                                    NokiaBgpAfiSafiConfig(
+                                        name="ipv4-unicast",
+                                        ipv4_unicast=NokiaBgpIPv4UnicastConfig(admin_state="enable"),
+                                    )
+                                ],
+                                group=[
+                                    NokiaBgpGroupConfig(
+                                        group_name=bgp_session.peer_group,
+                                        peer_as=bgp_session.remote_as,
+                                    )
+                                ],
+                                neighbor=[
+                                    NokiaBgpNeighborConfig(
+                                        admin_state="enable",
+                                        peer_address=bgp_session.remote_ip,
+                                        peer_group=bgp_session.peer_group,
+                                    )
+                                ],
                             )
-                        ],
+                        ),
                     )
                 )
 
