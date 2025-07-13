@@ -185,14 +185,9 @@ class NokiaBgpGroupConfig(BaseConfigModel):
     peer_as: Annotated[int, Field(None, alias="peer-as")]
 
 
-class NokiaBgpIPv4UnicastConfig(BaseConfigModel):
-    admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
-
-
 class NokiaBgpAfiSafiConfig(BaseConfigModel):
     afi_safi_name: Annotated[str, Field(None, alias="afi-safi-name")]
     admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
-    ipv4_unicast: Annotated[NokiaBgpIPv4UnicastConfig, Field(None, alias="ipv4-unicast")]
 
 
 class NokiaBgpConfig(BaseConfigModel):
@@ -240,7 +235,6 @@ class NokiaNetworkInstancesConfig(BaseConfigModel):
                                     NokiaBgpAfiSafiConfig(
                                         admin_state="enable",
                                         afi_safi_name="ipv4-unicast",
-                                        ipv4_unicast=NokiaBgpIPv4UnicastConfig(admin_state="enable"),
                                     )
                                 ],
                                 group=[
