@@ -175,8 +175,8 @@ class NokiaInterfacesConfig(BaseConfigModel):
 
 
 class NokiaBgpNeighborConfig(BaseConfigModel):
-    admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
     peer_address: Annotated[str, Field(None, alias="peer-address")]
+    admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
     peer_group: Annotated[str, Field(None, alias="peer-group")]
 
 
@@ -190,7 +190,8 @@ class NokiaBgpIPv4UnicastConfig(BaseConfigModel):
 
 
 class NokiaBgpAfiSafiConfig(BaseConfigModel):
-    name: str
+    afi_safi_name: Annotated[str, Field(None, alias="afi-safi-name")]
+    admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
     ipv4_unicast: NokiaBgpIPv4UnicastConfig
 
 
@@ -237,7 +238,8 @@ class NokiaNetworkInstancesConfig(BaseConfigModel):
                                 router_id=bgp_session.local_ip,
                                 afi_safi=[
                                     NokiaBgpAfiSafiConfig(
-                                        name="ipv4-unicast",
+                                        admin_state="enable",
+                                        afi_safi_name="ipv4-unicast",
                                         ipv4_unicast=NokiaBgpIPv4UnicastConfig(admin_state="enable"),
                                     )
                                 ],
@@ -295,7 +297,7 @@ class Device:
         return cls(device_data=device_data)
 
     def yaml_config(self) -> dict[str, Any]:
-        return yaml.dump(self._device_config.dict(by_alias=True, exclude_defaults=True))
+        return yaml.dump(self._device_config.dict(by_alias=True, exclude_defaults=True), sort_keys=False)
 
 
 class DeviceTransformYaml(InfrahubTransform):
