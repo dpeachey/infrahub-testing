@@ -224,7 +224,7 @@ class NokiaNetworkInstancesConfig(BaseConfigModel):
             if bgp_session.status == "active":
                 network_instances.append(
                     NokiaNetworkInstanceConfig(
-                        name="deafult",
+                        name="default",
                         admin_state="enable",
                         protocols=NokiaProtocolsConfig(
                             bgp=NokiaBgpConfig(
