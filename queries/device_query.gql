@@ -110,6 +110,48 @@ query DeviceQuery($device: String!) {
             }
           }
         }
+        bgp_sessions {
+          edges {
+            node {
+              status {
+                value
+              }
+              local_ip {
+                node {
+                  address {
+                    value
+                  }
+                }
+              }
+              remote_ip {
+                node {
+                  address {
+                    value
+                  }
+                }
+              }
+              local_as {
+                node {
+                  asn {
+                    value
+                  }
+                }
+              }
+              remote_as {
+                node {
+                  asn {
+                    value
+                  }
+                }
+              }
+              peer_group {
+                node {
+                  display_label
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

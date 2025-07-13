@@ -28,12 +28,22 @@ class InterfaceData(BaseDataModel):
     vlans: list[VlanData]
 
 
+class BgpSessionData(BaseDataModel):
+    status: Literal["active", "provisioning"]
+    local_ip: str
+    remote_ip: str
+    local_as: int
+    remote_as: int
+    peer_group: str
+
+
 class DeviceData(BaseDataModel):
     name: str
     description: str | None
     platform: str
     type: str
     interfaces: list[InterfaceData]
+    bgp_sessions: list[BgpSessionData]
 
     @classmethod
     def create(cls, infra_device: dict[str, Any]) -> Self:
@@ -66,6 +76,19 @@ class DeviceData(BaseDataModel):
                 if interface["node"].get("l2_mode")
             ]
             if infra_device.get("interfaces")
+            else [],
+            bgp_sessions=[
+                BgpSessionData(
+                    status=bgp_session["node"]["status"]["value"],
+                    local_ip=bgp_session["node"]["local_ip"]["node"]["address"]["value"].replace("/32", ""),
+                    remote_ip=bgp_session["node"]["remote_ip"]["node"]["address"]["value"].replace("/32", ""),
+                    local_as=bgp_session["node"]["local_as"]["node"]["asn"]["value"],
+                    remote_as=bgp_session["node"]["remote_as"]["node"]["asn"]["value"],
+                    peer_group=bgp_session["node"]["peer_group"]["node"]["display_label"],
+                )
+                for bgp_session in infra_device["bgp_sessions"]["edges"]
+            ]
+            if infra_device.get("bgp_sessions")
             else [],
         )
 
@@ -151,13 +174,105 @@ class NokiaInterfacesConfig(BaseConfigModel):
         return cls(interface=interfaces)
 
 
+class NokiaBgpNeighborConfig(BaseConfigModel):
+    admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
+    peer_address: Annotated[str, Field(None, alias="peer-address")]
+    peer_group: Annotated[str, Field(None, alias="peer-group")]
+
+
+class NokiaBgpGroupConfig(BaseConfigModel):
+    group_name: Annotated[str, Field(None, alias="group-name")]
+    peer_as: Annotated[int, Field(None, alias="peer-as")]
+
+
+class NokiaBgpIPv4UnicastConfig(BaseConfigModel):
+    admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
+
+
+class NokiaBgpAfiSafiConfig(BaseConfigModel):
+    name: str
+    ipv4_unicast: NokiaBgpIPv4UnicastConfig
+
+
+class NokiaBgpConfig(BaseConfigModel):
+    admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
+    autonomous_system: Annotated[int, Field(None, alias="autonomous-system")]
+    router_id: Annotated[str, Field(None, alias="router-id")]
+    afi_safi: Annotated[list[NokiaBgpAfiSafiConfig], Field(None, alias="afi-safi")]
+    group: list[NokiaBgpGroupConfig]
+    neighbor: list[NokiaBgpNeighborConfig]
+
+
+class NokiaProtocolsConfig(BaseConfigModel):
+    bgp: NokiaBgpConfig
+
+
+class NokiaNetworkInstanceConfig(BaseConfigModel):
+    name: str
+    admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
+    protocols: list[NokiaProtocolsConfig]
+
+
+class NokiaNetworkInstancesConfig(BaseConfigModel):
+    """
+    Top level container for network instances.
+    """
+
+    network_instance: Annotated[list[NokiaNetworkInstanceConfig], Field(None, alias="network-instance")]
+
+    @classmethod
+    def create(cls, device_data: DeviceData) -> Self:
+        network_instances: list[NokiaNetworkInstanceConfig] = []
+
+        for bgp_session in device_data.bgp_sessions:
+            if bgp_session.status == "active":
+                network_instances.append(
+                    NokiaNetworkInstanceConfig(
+                        name="deafult",
+                        admin_state="enable",
+                        protocols=[
+                            NokiaProtocolsConfig(
+                                bgp=NokiaBgpConfig(
+                                    admin_state="enable",
+                                    autonomous_system=bgp_session.local_as,
+                                    router_id=bgp_session.local_ip,
+                                    afi_safi=[
+                                        NokiaBgpAfiSafiConfig(
+                                            name="ipv4-unicast",
+                                            ipv4_unicast=NokiaBgpIPv4UnicastConfig(admin_state="enable"),
+                                        )
+                                    ],
+                                    group=[
+                                        NokiaBgpGroupConfig(
+                                            group_name=bgp_session.peer_group,
+                                            peer_as=bgp_session.remote_as,
+                                        )
+                                    ],
+                                    neighbor=[
+                                        NokiaBgpNeighborConfig(
+                                            admin_state="enable",
+                                            peer_address=bgp_session.remote_ip,
+                                            peer_group=bgp_session.peer_group,
+                                        )
+                                    ],
+                                )
+                            )
+                        ],
+                    )
+                )
+
+        return cls(network_instance=network_instances)
+
+
 class NokiaDeviceConfig(BaseDeviceConfigModel):
     interfaces: Annotated[NokiaInterfacesConfig, Field(None, alias="interfaces")]
+    network_instances: Annotated[NokiaNetworkInstancesConfig, Field(None, alias="network-instances")]
 
     @classmethod
     def create(cls, device_data: DeviceData) -> Self:
         interfaces: NokiaInterfacesConfig = NokiaInterfacesConfig.create(device_data=device_data)
-        return cls(interfaces=interfaces)
+        network_instances: NokiaNetworkInstancesConfig = NokiaNetworkInstancesConfig.create(device_data=device_data)
+        return cls(interfaces=interfaces, network_instances=network_instances)
 
 
 class DeviceConfig(BaseDeviceConfigModel):
@@ -182,7 +297,7 @@ class Device:
         return cls(device_data=device_data)
 
     def yaml_config(self) -> dict[str, Any]:
-        return yaml.dump(self._device_config.interfaces.dict(by_alias=True, exclude_defaults=True))
+        return yaml.dump(self._device_config.dict(by_alias=True, exclude_defaults=True))
 
 
 class DeviceTransformYaml(InfrahubTransform):
