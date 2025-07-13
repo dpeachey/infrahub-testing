@@ -192,7 +192,7 @@ class NokiaBgpIPv4UnicastConfig(BaseConfigModel):
 class NokiaBgpAfiSafiConfig(BaseConfigModel):
     afi_safi_name: Annotated[str, Field(None, alias="afi-safi-name")]
     admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
-    ipv4_unicast: NokiaBgpIPv4UnicastConfig
+    ipv4_unicast: Annotated[NokiaBgpIPv4UnicastConfig, Field(None, alias="ipv4-unicast")]
 
 
 class NokiaBgpConfig(BaseConfigModel):
