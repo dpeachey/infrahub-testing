@@ -1,9 +1,10 @@
 import logging
 from typing import Any, Self
 
-import yaml
+from helpers import deep_merge
 from infrahub_sdk.transforms import InfrahubTransform
 from pydantic import BaseModel, ConfigDict, Field
+from ruamel.yaml import YAML
 from typing_extensions import Annotated, Literal
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -283,12 +284,15 @@ class Device:
         return cls(device_data=device_data)
 
     def yaml_config(self) -> dict[str, Any]:
+        yaml = YAML()
+        yaml.preserve_quotes = True
+        yaml.indent(mapping=2, sequence=4, offset=2)
         config = self._device_config.dict(by_alias=True, exclude_defaults=True)
 
         with open("templates/leaf.yaml", "r") as file:
-            template = yaml.safe_load(file)
+            template = yaml.load(file)
 
-        return yaml.dump(config, sort_keys=False)
+        return yaml.dump(deep_merge(template, config))
 
 
 class DeviceTransformYaml(InfrahubTransform):
