@@ -20,7 +20,7 @@ artifact_definitions:
   - name: device_config_yaml
     artifact_name: Device config YAML
     content_type: text/plain
-    targets: nokia_devices
+    targets: devices
     transformation: device_transform_yaml
     parameters:
       device: name__value
