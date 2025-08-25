@@ -19,7 +19,7 @@ queries:
 artifact_definitions:
   - name: device_config_yaml
     artifact_name: Device config YAML
-    content_type: text/yaml
+    content_type: application/yaml
     targets: devices
     transformation: device_transform_yaml
     parameters:
