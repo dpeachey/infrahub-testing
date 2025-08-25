@@ -287,7 +287,7 @@ class Device:
     def yaml_config(self) -> dict[str, Any]:
         config = self._device_config.dict(by_alias=True, exclude_defaults=True)
 
-        with open("templates/leaf.yaml", "r") as file:
+        with open("template_leaf.yaml", "r") as file:
             template = yaml.safe_load(file)
 
         return yaml.dump(deep_merge(template, config), sort_keys=False)
