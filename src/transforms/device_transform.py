@@ -6,7 +6,7 @@ from infrahub_sdk.transforms import InfrahubTransform
 from pydantic import BaseModel, ConfigDict, Field
 from typing_extensions import Annotated, Literal
 
-from infrahub_testing.helpers import deep_merge
+from src.helpers import deep_merge
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s - %(levelname)s - %(message)s")
 LIST_MERGE_ID_KEYS = ["name", "index", "sequence-id", "peer-address"]
@@ -300,6 +300,6 @@ class DeviceTransformYaml(InfrahubTransform):
     url: str = "device-yaml"
 
     async def transform(self, data: dict[str, Any]) -> dict[str, Any]:
-        templates_path = f"{self.root_directory}/infrahub_testing/templates"
+        templates_path = f"{self.root_directory}/src/templates"
         device: Device = Device.create(data=data, templates_path=templates_path)
         return device.yaml_config()

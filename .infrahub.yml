@@ -2,11 +2,11 @@
 python_transforms:
   - name: device_transform_yaml
     class_name: DeviceTransformYaml
-    file_path: infrahub_testing/transforms/device_transform.py
+    file_path: src/transforms/device_transform.py
 
 queries:
   - name: device_query
-    file_path: infrahub_testing/queries/device_query.gql
+    file_path: src/queries/device_query.gql
   # - name: all_devices_query
   #   file_path: queries/all_devices_query.gql
   # - name: loopback_query
