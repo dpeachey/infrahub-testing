@@ -98,9 +98,16 @@ class NokiaBgpNeighborConfig(BaseConfigModel):
     peer_group: Annotated[str, Field(None, alias="peer-group")]
 
 
+class NokiaBgpGroupConfig(BaseConfigModel):
+    group_name: Annotated[str, Field(None, alias="group-name")]
+    peer_as: Annotated[int, Field(None, alias="peer-as")]
+
+
 class NokiaBgpConfig(BaseConfigModel):
     router_id: Annotated[str, Field(None, alias="router-id")]
+    autonomous_system: Annotated[int, Field(None, alias="autonomous-system")]
     neighbor: list[NokiaBgpNeighborConfig]
+    group: list[NokiaBgpGroupConfig]
 
 
 class NokiaProtocolsConfig(BaseConfigModel):
@@ -124,25 +131,35 @@ class NokiaNetworkInstanceConfig(BaseConfigModel):
                         router_id = ip.address.replace("/32", "")
                         break
 
-        network_instances.append(
-            cls(
-                name="default",
-                protocols=NokiaProtocolsConfig(
-                    bgp=NokiaBgpConfig(
-                        router_id=router_id,
-                        neighbor=[
-                            NokiaBgpNeighborConfig(
-                                admin_state="enable",
-                                peer_address=bgp_session.remote_ip.replace("/128", ""),
-                                peer_group=bgp_session.peer_group,
-                            )
-                            for bgp_session in device_data.bgp_sessions
-                            if bgp_session.status == "active"
-                        ],
-                    )
-                ),
+        if device_data.bgp_sessions:
+            network_instances.append(
+                cls(
+                    name="default",
+                    protocols=NokiaProtocolsConfig(
+                        bgp=NokiaBgpConfig(
+                            router_id=router_id,
+                            autonomous_system=device_data.bgp_sessions[0].local_as,
+                            group=[
+                                NokiaBgpGroupConfig(
+                                    group_name=bgp_session.peer_group,
+                                    peer_as=bgp_session.remote_as,
+                                )
+                                for bgp_session in device_data.bgp_sessions
+                                if bgp_session.status == "active"
+                            ],
+                            neighbor=[
+                                NokiaBgpNeighborConfig(
+                                    admin_state="enable",
+                                    peer_address=bgp_session.remote_ip.replace("/128", ""),
+                                    peer_group=bgp_session.peer_group,
+                                )
+                                for bgp_session in device_data.bgp_sessions
+                                if bgp_session.status == "active"
+                            ],
+                        )
+                    ),
+                )
             )
-        )
 
         return network_instances
 

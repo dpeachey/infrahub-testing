@@ -1,6 +1,6 @@
 import copy
 
-LIST_MERGE_ID_KEYS = ["name", "index", "sequence-id", "peer-address"]
+LIST_MERGE_ID_KEYS = ["name", "index", "sequence-id", "group-name", "peer-address"]
 
 
 def find_id_key(list_of_dicts):

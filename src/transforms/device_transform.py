@@ -1,11 +1,8 @@
-import logging
 from typing import Any
 
 from infrahub_sdk.transforms import InfrahubTransform
 
 from ..models.device import Device
-
-logging.basicConfig(level=logging.WARNING, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 class DeviceTransformYaml(InfrahubTransform):

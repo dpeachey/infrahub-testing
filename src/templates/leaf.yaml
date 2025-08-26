@@ -1155,7 +1155,7 @@ srl_nokia-network-instance:network-instance:
         afi-safi:
           - admin-state: enable
             afi-safi-name: srl_nokia-common:ipv6-unicast
-        autonomous-system: 64512
+        autonomous-system: # dynamic
         group:
           - afi-safi:
               - admin-state: enable
@@ -1169,7 +1169,7 @@ srl_nokia-network-instance:network-instance:
             group-name: IBGP-OVERLAY
             import-policy:
               - all
-            peer-as: 64512
+            peer-as: # dynamic
             timers:
               minimum-advertisement-interval: 1
         neighbor: [] # dynamic
