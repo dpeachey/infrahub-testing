@@ -3,8 +3,8 @@ from typing import Literal, Self
 from pydantic import Field
 from typing_extensions import Annotated
 
-from models.base import BaseConfigModel, BaseDeviceConfigModel
-from models.data import DeviceData
+from .base import BaseConfigModel, BaseDeviceConfigModel
+from .data import DeviceData
 
 
 class NokiaVlanIdConfig(BaseConfigModel):
