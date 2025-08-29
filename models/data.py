@@ -1,6 +1,6 @@
 from typing import Any, Literal, Self
 
-from .base import BaseDataModel
+from models.base import BaseDataModel
 
 
 class IpAddressData(BaseDataModel):

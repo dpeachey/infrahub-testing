@@ -1,0 +1,11 @@
+# Changes here will be overwritten by Copier
+_commit: v0.0.1-14-ged22920
+_src_path: https://github.com/opsmill/infrahub-template.git
+generators: true
+menus: true
+objects: true
+package_mode: true
+project_name: infrahub-testing
+scripts: true
+tests: true
+transforms: true

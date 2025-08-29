@@ -1,0 +1,15 @@
+query InterfaceDeviceQuery($interface: String!) {
+  InfraInterface(name__value: $interface) {
+    edges {
+      node {
+        device {
+          node {
+            name {
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+}

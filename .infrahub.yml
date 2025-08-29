@@ -2,11 +2,13 @@
 python_transforms:
   - name: device_transform_yaml
     class_name: DeviceTransformYaml
-    file_path: src/transforms/device_transform.py
+    file_path: transforms/device_transform.py
 
 queries:
   - name: device_query
-    file_path: src/queries/device_query.gql
+    file_path: queries/device_query.gql
+  - name: interface_device_query
+    file_path: queries/interface_device_query.gql
   # - name: all_devices_query
   #   file_path: queries/all_devices_query.gql
   # - name: loopback_query
@@ -25,15 +27,14 @@ artifact_definitions:
     parameters:
       device: name__value
 
-# check_definitions:
-#   - name: loopback_check
-#     class_name: LoopbackCheck
-#     file_path: checks/loopback_check.py
-#     targets: arista_devices
-#     parameters:
-#       device: name__value
-
-# generator_definitions:
+generator_definitions:
+  - name: device_artifact_generator
+    class_name: DeviceArtifactGenerator
+    file_path: generators/device_artifact_generator.py
+    targets: devices
+    query: interface_device_query
+    parameters:
+      interface: name__value
 #   - name: device_generator
 #     class_name: DeviceGenerator
 #     file_path: generators/device_generator.py
@@ -41,3 +42,11 @@ artifact_definitions:
 #     query: sites_query
 #     parameters:
 #       site: name__value
+
+# check_definitions:
+#   - name: loopback_check
+#     class_name: LoopbackCheck
+#     file_path: checks/loopback_check.py
+#     targets: arista_devices
+#     parameters:
+#       device: name__value

@@ -2,10 +2,10 @@ from typing import Any, Self
 
 import yaml
 
-from ..helpers import deep_merge
-from .base import BaseDeviceConfigModel
-from .config import DeviceConfig
-from .data import DeviceData
+from helpers.merge import deep_merge
+from models.base import BaseDeviceConfigModel
+from models.config import DeviceConfig
+from models.data import DeviceData
 
 
 class Device:

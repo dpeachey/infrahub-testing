@@ -9,8 +9,8 @@ class DeviceGenerator(InfrahubGenerator):
 
         device_obj = await self.client.create(
             kind="InfraDevice",
-            name=f"{site["name"]["value"]}-core5",
-            description=f"Core router in {site["city"]["value"]}",
+            name=f"{site['name']['value']}-core5",
+            description=f"Core router in {site['city']['value']}",
             status="provisioning",
             role="core",
             type="MX204",
