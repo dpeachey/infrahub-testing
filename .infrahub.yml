@@ -9,6 +9,8 @@ queries:
     file_path: src/queries/device_query.gql
   - name: device_minimal_query
     file_path: src/queries/device_minimal_query.gql
+  - name: interface_device_query
+    file_path: src/queries/interface_device_query.gql
   # - name: all_devices_query
   #   file_path: queries/all_devices_query.gql
   # - name: loopback_query
@@ -27,14 +29,14 @@ artifact_definitions:
     parameters:
       device: name__value
 
-# generator_definitions:
-#   - name: device_artifact_generator
-#     class_name: DeviceArtifactGenerator
-#     file_path: src/generators/device_artifact_generator.py
-#     targets: devices
-#     query: device_minimal_query
-#     parameters:
-#       device: device__node__name__value
+generator_definitions:
+  - name: device_artifact_generator
+    class_name: DeviceArtifactGenerator
+    file_path: src/generators/device_artifact_generator.py
+    targets: devices
+    query: device_minimal_query
+    parameters:
+      device: device__node__name__value
 #   - name: device_generator
 #     class_name: DeviceGenerator
 #     file_path: generators/device_generator.py
