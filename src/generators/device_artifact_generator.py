@@ -6,7 +6,7 @@ from infrahub_sdk.generator import InfrahubGenerator
 
 class DeviceArtifactGenerator(InfrahubGenerator):
     async def generate(self, data: dict[str, Any]) -> None:
-        device = data["InfraInterface"]["edges"][0]["node"]["device"]["node"]["name"]["value"]
+        device = data["InfraDevice"]["edges"][0]["node"]["name"]["value"]
         client = InfrahubClientSync()
         device = client.get(kind="InfraDevice", name__value=device)
         device.artifact_generate(name="Device config YAML")
