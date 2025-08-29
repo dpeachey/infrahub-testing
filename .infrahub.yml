@@ -34,9 +34,9 @@ generator_definitions:
     class_name: DeviceArtifactGenerator
     file_path: src/generators/device_artifact_generator.py
     targets: devices
-    query: device_minimal_query
+    query: interface_device_query
     parameters:
-      device: device__node__name__value
+      interface: name__value
 #   - name: device_generator
 #     class_name: DeviceGenerator
 #     file_path: generators/device_generator.py
