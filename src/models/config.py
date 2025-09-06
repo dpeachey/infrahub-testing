@@ -92,6 +92,15 @@ class NokiaInterfaceConfig(BaseConfigModel):
         return interfaces
 
 
+class NokiaIsisInstanceConfig(BaseConfigModel):
+    name: str
+    net: list[str]
+
+
+class NokiaIsisConfig(BaseConfigModel):
+    instance: list[NokiaIsisInstanceConfig]
+
+
 class NokiaBgpNeighborConfig(BaseConfigModel):
     peer_address: Annotated[str, Field(None, alias="peer-address")]
     admin_state: Annotated[Literal["enable", "disable"], Field(None, alias="admin-state")]
@@ -112,6 +121,7 @@ class NokiaBgpConfig(BaseConfigModel):
 
 class NokiaProtocolsConfig(BaseConfigModel):
     bgp: Annotated[NokiaBgpConfig, Field(None, alias="srl_nokia-bgp:bgp")]
+    isis: Annotated[NokiaIsisConfig, Field(None, alias="srl_nokia-isis:isis")]
 
 
 class NokiaNetworkInstanceConfig(BaseConfigModel):
@@ -123,12 +133,16 @@ class NokiaNetworkInstanceConfig(BaseConfigModel):
     def create(cls, device_data: DeviceData) -> list[Self]:
         network_instances: list[Self] = []
         router_id = ""
+        isis_net_id = ""
 
         for interface in device_data.interfaces:
             if interface.role == "loopback":
                 for ip in interface.ip_addresses:
                     if "/32" in ip.address:
-                        router_id = ip.address.replace("/32", "")
+                        ip = ip.address.replace("/32", "")
+                        last_octet = ip.split(".")[-1]
+                        router_id = ip
+                        isis_net_id = f"49.0001.0000.0000.{last_octet.zfill(4)}.00"
                         break
 
         if device_data.bgp_sessions:
@@ -136,6 +150,9 @@ class NokiaNetworkInstanceConfig(BaseConfigModel):
                 cls(
                     name="default",
                     protocols=NokiaProtocolsConfig(
+                        isis=NokiaIsisConfig(
+                            instance=[NokiaIsisInstanceConfig(name="ISIS", net=[isis_net_id])],
+                        ),
                         bgp=NokiaBgpConfig(
                             router_id=router_id,
                             autonomous_system=device_data.bgp_sessions[0].local_as,
@@ -156,7 +173,7 @@ class NokiaNetworkInstanceConfig(BaseConfigModel):
                                 for bgp_session in device_data.bgp_sessions
                                 if bgp_session.status == "active"
                             ],
-                        )
+                        ),
                     ),
                 )
             )
