@@ -15,6 +15,7 @@ class Device:
         self._device_config: BaseDeviceConfigModel = DeviceConfig.create(device_data)
         self.name: str = device_data.name
         self.type: str = device_data.type
+        self.role: str = device_data.role
 
     @classmethod
     def create(cls, data: dict[str, Any], templates_path: str) -> Self:
@@ -25,7 +26,10 @@ class Device:
     def yaml_config(self) -> dict[str, Any]:
         config = self._device_config.dict(by_alias=True, exclude_defaults=True)
 
-        with open(f"{self._templates_path}/leaf.yaml", "r") as file:
-            template = yaml.safe_load(file)
+        try:
+            with open(f"{self._templates_path}/{self.role}.yaml", "r") as file:
+                template = yaml.safe_load(file)
+        except FileNotFoundError:
+            return "---"
 
         return yaml.dump(deep_merge(template, config), sort_keys=False)

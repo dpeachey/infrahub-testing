@@ -36,6 +36,7 @@ class DeviceData(BaseDataModel):
     description: str | None
     platform: str
     type: str
+    role: str
     interfaces: list[InterfaceData]
     bgp_sessions: list[BgpSessionData]
 
@@ -46,6 +47,7 @@ class DeviceData(BaseDataModel):
             description=infra_device["description"]["value"],
             platform=infra_device["platform"]["node"]["name"]["value"],
             type=infra_device["type"]["value"],
+            role=infra_device["role"]["value"],
             interfaces=[
                 InterfaceData(
                     name=interface["node"]["name"]["value"],
