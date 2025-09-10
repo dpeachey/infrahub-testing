@@ -29,14 +29,14 @@ artifact_definitions:
     parameters:
       device: name__value
 
-# generator_definitions:
-#   - name: device_artifact_generator
-#     class_name: DeviceArtifactGenerator
-#     file_path: src/generators/device_artifact_generator.py
-#     targets: devices
-#     query: interface_device_query
-#     parameters:
-#       interface: name__value
+generator_definitions:
+  - name: device_artifact_generator
+    class_name: DeviceArtifactGenerator
+    file_path: src/generators/device_artifact_generator.py
+    targets: devices
+    query: interface_device_query
+    parameters:
+      device: device__node__name__value
 #   - name: device_generator
 #     class_name: DeviceGenerator
 #     file_path: generators/device_generator.py
