@@ -15,7 +15,7 @@ class InterfaceData(BaseDataModel):
     name: str
     description: str | None
     enabled: bool
-    status: Literal["active", "provisioning"]
+    status: Literal["active", "provisioning", "maintenance"]
     role: Literal["uplink", "leaf", "loopback"]
     l2_mode: Literal["Access", "Trunk"] | None
     ip_addresses: list[IpAddressData]
