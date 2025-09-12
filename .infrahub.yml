@@ -33,7 +33,7 @@ generator_definitions:
   - name: device_artifact_generator
     class_name: DeviceArtifactGenerator
     file_path: src/generators/device_artifact_generator.py
-    targets: interface
+    targets: interfaces
     query: interface_device_query
     parameters:
       device: device__node__name__value
