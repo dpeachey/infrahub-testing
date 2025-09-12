@@ -40,7 +40,7 @@ class NokiaSubinterfaceConfig(BaseConfigModel):
 class NokiaInterfaceConfig(BaseConfigModel):
     match_field: str = "name"
     name: str
-    description: str | None = None
+    description: str = ""
     admin_state: Annotated[Literal["enable", "disable"] | None, Field(None, alias="admin-state")] = None
     vlan_tagging: Annotated[bool | None, Field(None, alias="vlan-tagging")] = None
     subinterface: list[NokiaSubinterfaceConfig] | None = None
@@ -50,44 +50,44 @@ class NokiaInterfaceConfig(BaseConfigModel):
         interfaces: list[Self] = []
 
         for interface in device_data.interfaces:
-            if interface.status == "active":
-                match interface.role:
-                    case "uplink":
-                        interfaces.append(
-                            cls(
-                                name=interface.name,
-                                description=interface.description,
-                            )
+            match interface.role:
+                case "uplink":
+                    interfaces.append(
+                        cls(
+                            name=interface.name,
+                            description=interface.description,
+                            admin_state="enable" if interface.status == "active" else "disable",
                         )
-                    case "loopback":
-                        interfaces.append(
-                            cls(
-                                name=interface.name,
-                                subinterface=[
-                                    NokiaSubinterfaceConfig(
-                                        index=0,
-                                        ipv4=NokiaIpAddressConfig(
-                                            address=[
-                                                NokiaIpPrefixConfig(
-                                                    ip_prefix=ip.address,
-                                                )
-                                                for ip in interface.ip_addresses
-                                                if ip.address.endswith("/32")
-                                            ]
-                                        ),
-                                        ipv6=NokiaIpAddressConfig(
-                                            address=[
-                                                NokiaIpPrefixConfig(
-                                                    ip_prefix=ip.address,
-                                                )
-                                                for ip in interface.ip_addresses
-                                                if ip.address.endswith("/128")
-                                            ]
-                                        ),
-                                    )
-                                ],
-                            )
+                    )
+                case "loopback":
+                    interfaces.append(
+                        cls(
+                            name=interface.name,
+                            subinterface=[
+                                NokiaSubinterfaceConfig(
+                                    index=0,
+                                    ipv4=NokiaIpAddressConfig(
+                                        address=[
+                                            NokiaIpPrefixConfig(
+                                                ip_prefix=ip.address,
+                                            )
+                                            for ip in interface.ip_addresses
+                                            if ip.address.endswith("/32")
+                                        ]
+                                    ),
+                                    ipv6=NokiaIpAddressConfig(
+                                        address=[
+                                            NokiaIpPrefixConfig(
+                                                ip_prefix=ip.address,
+                                            )
+                                            for ip in interface.ip_addresses
+                                            if ip.address.endswith("/128")
+                                        ]
+                                    ),
+                                )
+                            ],
                         )
+                    )
 
         return interfaces
 

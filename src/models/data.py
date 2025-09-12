@@ -23,7 +23,7 @@ class InterfaceData(BaseDataModel):
 
 
 class BgpSessionData(BaseDataModel):
-    status: Literal["active", "provisioning"]
+    status: Literal["active", "provisioning", "maintenance"]
     local_ip: str
     remote_ip: str
     local_as: int
