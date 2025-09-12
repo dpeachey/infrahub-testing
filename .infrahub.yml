@@ -36,7 +36,7 @@ generator_definitions:
     targets: interfaces
     query: interface_device_query
     parameters:
-      device: name__value
+      interface_id: id
 #   - name: device_generator
 #     class_name: DeviceGenerator
 #     file_path: generators/device_generator.py

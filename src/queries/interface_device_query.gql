@@ -1,9 +1,17 @@
-query DeviceQuery($device: String!) {
-  InfraDevice(name__value: $device) {
+query InterfaceDeviceQuery($interface_id: [ID]) {
+  InfraInterfaceL3(ids: $interface_id) {
     edges {
       node {
+        id
         name {
           value
+        }
+        device {
+          node {
+            name {
+              value
+            }
+          }
         }
       }
     }
